@@ -17,6 +17,7 @@ Client::Client(int fd, const ServerConfig &config): _config(config)
     _events = POLLIN;
     ManageAll::pollFdCreation(_fd, this);
     setErrorPages();
+    SetMimes();
 }
 
 
@@ -90,11 +91,11 @@ void Client::PollOutHandler()
     try{
         std::string path = CheckUrl();
         body = readFileTest(path);
+        _RequestParser.SetUrl(path);
     }
     catch (const HttpException& e)
     {
         std::string errorPagePath = getErrorPage(e.getStatusCode());
-        std::cout << errorPagePath << std::endl;
         if (errorPagePath == "404")
             body = _errorPages[404];
         else if (errorPagePath == "403")
@@ -105,11 +106,60 @@ void Client::PollOutHandler()
         oss << e.getStatusCode();
         statusCode = oss.str();
         statusText = e.getStatusText();
-    }
+        _RequestParser.SetUrl(errorPagePath);
 
+    }
     std::string header = GetHeaderResponse(body.size(), statusCode, statusText);
     send(_fd, (header + body).c_str(), header.size() + body.size(), 0);
 
     _events = 0;
     _closedStatus = true;
+}
+
+void Client::SetMimes()
+{
+    mimeTypes[".html"] = "text/html";
+    mimeTypes[".htm"]  = "text/html";
+    mimeTypes[".css"]  = "text/css";
+    mimeTypes[".js"]   = "application/javascript";
+    mimeTypes[".json"] = "application/json";
+    mimeTypes[".xml"]  = "application/xml";
+    mimeTypes[".txt"]  = "text/plain";
+    mimeTypes[".csv"]  = "text/csv";
+
+    mimeTypes[".png"]  = "image/png";
+    mimeTypes[".jpg"]  = "image/jpeg";
+    mimeTypes[".jpeg"] = "image/jpeg";
+    mimeTypes[".gif"]  = "image/gif";
+    mimeTypes[".bmp"]  = "image/bmp";
+    mimeTypes[".svg"]  = "image/svg+xml";
+    mimeTypes[".webp"] = "image/webp";
+    mimeTypes[".ico"]  = "image/x-icon";
+
+    mimeTypes[".mp3"]  = "audio/mpeg";
+    mimeTypes[".wav"]  = "audio/wav";
+    mimeTypes[".ogg"]  = "audio/ogg";
+    mimeTypes[".aac"]  = "audio/aac";
+    mimeTypes[".flac"] = "audio/flac";
+
+    mimeTypes[".mp4"]  = "video/mp4";
+    mimeTypes[".webm"] = "video/webm";
+    mimeTypes[".ogv"]  = "video/ogg";
+    mimeTypes[".avi"]  = "video/x-msvideo";
+    mimeTypes[".mov"]  = "video/quicktime";
+
+    mimeTypes[".zip"]  = "application/zip";
+    mimeTypes[".tar"]  = "application/x-tar";
+    mimeTypes[".gz"]   = "application/gzip";
+    mimeTypes[".7z"]   = "application/x-7z-compressed";
+    mimeTypes[".rar"]  = "application/vnd.rar";
+
+    mimeTypes[".ttf"]  = "font/ttf";
+    mimeTypes[".otf"]  = "font/otf";
+    mimeTypes[".woff"] = "font/woff";
+    mimeTypes[".woff2"]= "font/woff2";
+
+    mimeTypes[".pdf"]  = "application/pdf";
+    mimeTypes[".bin"]  = "application/octet-stream";
+    mimeTypes[".exe"]  = "application/octet-stream";
 }

@@ -6,7 +6,7 @@
 /*   By: mvachon <mvachon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 11:32:07 by nofanizz          #+#    #+#             */
-/*   Updated: 2026/01/29 19:05:44 by mvachon          ###   ########.fr       */
+/*   Updated: 2026/01/30 08:54:17 by mvachon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,13 @@ class Client : public AManager
 		std::string 	CheckUrl();
 		void	handleRequestReception();		
 		void	PollInHandler();
+		void	SetMimes();
 		void 	setErrorPages();
 		void	PollOutHandler();
         std::string GetHeaderResponse(size_t contentLength, std::string, std::string);
 		std::string GetRequest() {return _request;}
+
+		std::map<std::string, std::string> mimeTypes;
 };
 
 

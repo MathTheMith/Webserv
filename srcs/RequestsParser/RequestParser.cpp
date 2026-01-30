@@ -6,7 +6,7 @@
 /*   By: mvachon <mvachon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 18:56:53 by mvachon           #+#    #+#             */
-/*   Updated: 2026/01/29 15:51:38 by mvachon          ###   ########.fr       */
+/*   Updated: 2026/01/30 08:52:38 by mvachon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,29 @@ std::string Client::GetHeaderResponse(size_t contentLength, std::string StatusCo
     std::ostringstream oss;
     oss << contentLength;
 
+    std::string ContentType = "application/octet-stream";
+    std::string url = _RequestParser.GetUrl();
+
+    if (!url.empty()) {
+        size_t pos = url.rfind('.');
+        if (pos != std::string::npos && pos != url.size() - 1) { 
+            std::string ext = url.substr(pos);
+            std::map<std::string, std::string>::iterator it = mimeTypes.find(ext);
+            if (it != mimeTypes.end())
+                ContentType = it->second;
+        }
+    }
+
     std::string header =
-        "HTTP/1.1 " + StatusCode + " " + StatusText +" \r\n"
-        "Content-Type: text/html; charset=UTF-8\r\n"
+        "HTTP/1.1 " + StatusCode + " " + StatusText + "\r\n"
+        "Content-Type: " + ContentType + "; charset=UTF-8\r\n"
         "Content-Length: " + oss.str() + "\r\n"
         "Connection: close\r\n"
         "\r\n";
 
     return header;
 }
+
 
 
 void RequestParser::ParseRequest(const std::string& request)
