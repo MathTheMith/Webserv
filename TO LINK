@@ -1,6 +1,6 @@
 server {
     root /home/main;
-    index index.html;
+    index index.html; 
     client_max_body_size 20000000;
 
         location /upload {
@@ -20,6 +20,3 @@ server {
 }
 
 \r\n\r\n
-
-fait en sorte de gerer tout les extension (html, css, js)
-il y avais des erreur sur mes implementation de pages d'erreurs

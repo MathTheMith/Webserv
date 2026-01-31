@@ -58,7 +58,7 @@
         <h1>🚀 Webserv OK</h1>
         <p>Votre serveur web fonctionne correctement.</p>
 
-        <a href="index2.html" class="btn">Accéder a index2</a>
+        <a href="/" class="btn">Accéder a index2</a>
     </div>
 </body>
 </html>
