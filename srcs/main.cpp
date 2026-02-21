@@ -1,33 +1,27 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mvachon <mvachon@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/20 12:31:03 by nofanizz          #+#    #+#             */
-/*   Updated: 2026/01/30 13:49:44 by mvachon          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "ManageAll.hpp"
 #include "Config.hpp"
+#include "WebServer.hpp"
+#include "Server.hpp"
+#include <iostream>
 
-int	main(int ac, char **av)
+int main(int ac, char **av)
 {
-	Config config;
-	(void)ac;
-	if (av[1])
-		config.setFile(av[1]);
-	else
+	if (!av[1] && ac != 2)
 	{
 		std::cout << "No config file" << std::endl;
 		return 1;
 	}
 
-	const std::vector<ServerConfig> &SavedServers= config.getServers();
-	for(size_t i = 0; i < SavedServers.size(); i++)
-		new Server (SavedServers[i]);
-	ManageAll::loop();
-
+	Config config;
+	config.setFile(av[1]);
+	try
+	{
+		const std::vector<ServerConfig> &SavedServers = config.getServers();
+		for (size_t i = 0; i < SavedServers.size(); i++)
+			new Server(SavedServers[i]);
+		WebServer::run();
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << e.what() << '\n';
+	}
 }
