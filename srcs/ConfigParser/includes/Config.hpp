@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nofanizz <nofanizz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mvachon <mvachon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 20:24:07 by mvachon           #+#    #+#             */
-/*   Updated: 2026/02/09 15:21:42 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/02/26 09:30:54 by mvachon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ struct LocationConfig
     std::string index;
     bool autoindex;     
     std::vector<std::string> allowed_methods;
+    // TODO put the "return"
     LocationConfig() : autoindex(false){}
 };
 
@@ -93,7 +94,7 @@ class Config
 
     public:
         Config();
-        int setFile(std::string doc);
+        bool setFile(std::string doc);
         const std::vector<ServerConfig>& getServers() const;
         void printServers();
 };

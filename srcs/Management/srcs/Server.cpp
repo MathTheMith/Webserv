@@ -39,7 +39,6 @@ int Server::createSocket() {
 void Server::createSocketAdress(const ServerConfig &serverconfig) {
 	struct addrinfo hints, *res;
 	int status;
-
 	std::memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
@@ -49,7 +48,7 @@ void Server::createSocketAdress(const ServerConfig &serverconfig) {
 		std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
 		throw std::runtime_error("Failed to resolve host IP");
 	}
-
+	
 	_servAddr.sin_family = AF_INET;
 	_servAddr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
 	_servAddr.sin_port = htons(serverconfig.port);
@@ -64,10 +63,14 @@ void Server::bindClient(int fd) {
 	}
 }
 
-void Server::PollInHandler() {
-	struct sockaddr_in clientaddr;
-	socklen_t addr_len = sizeof(clientaddr);
-	int client_fd = accept(_fd, (sockaddr *)&clientaddr, &addr_len);
-	fcntl(client_fd, F_SETFL, O_NONBLOCK);
-	new Client(client_fd, _serverConfig);
+void Server::PollInHandler(){
+    struct sockaddr_in clientaddr;
+    socklen_t addr_len = sizeof(clientaddr);
+    int client_fd = accept(_fd, (sockaddr *)&clientaddr, &addr_len);
+    if (client_fd == -1) {
+        perror("accept failed");
+        return;
+    }
+    fcntl(client_fd, F_SETFL, O_NONBLOCK);
+    new Client(client_fd, _serverConfig);
 }

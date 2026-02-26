@@ -16,11 +16,13 @@ class WebServer
 		static void updateStatus();
 		static size_t	getPollFdSize();
 		static AManager* getManager(int fd);
-
+		static bool _finalAutoIndex;
+		
 	public:
 		//functions
 		static void pollFdCreation(const int &fd, AManager *manager);
 		static void	run();
+		static void destroy();
 
 };
 

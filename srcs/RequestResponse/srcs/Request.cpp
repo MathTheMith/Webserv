@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nofanizz <nofanizz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mvachon <mvachon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 11:01:51 by nofanizz          #+#    #+#             */
-/*   Updated: 2026/02/21 12:56:26 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/02/26 10:23:06 by mvachon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,35 +52,38 @@ void Request::parseContentLength(const std::string &req) {
 }
 
 void Request::parseWebKitForm(const std::string &headers) {
-	size_t ct = headers.find("Content-Type:");
-	if (ct == std::string::npos)
-		return;
+    size_t ct = headers.find("Content-Type:");
+    if (ct == std::string::npos)
+        return;
 
-	size_t lineEnd = headers.find("\r\n", ct);
-	if (lineEnd == std::string::npos)
-		throw Http400Exception();
+    size_t lineEnd = headers.find("\r\n", ct);
+    if (lineEnd == std::string::npos)
+        return;
 
-	std::string line = headers.substr(ct, lineEnd - ct);
+    std::string line = headers.substr(ct, lineEnd - ct);
 
-	size_t b = line.find("boundary=");
-	if (b == std::string::npos)
-		throw Http400Exception();
+    size_t b = line.find("boundary=");
+    if (b == std::string::npos)
+        return;
 
-	_webKitForm = line.substr(b + 9);
+    _webKitForm = line.substr(b + 9);
 }
 
 bool Request::isValid(const std::string &req) {
 	size_t header_end = req.find("\r\n\r\n");
 	if (header_end == std::string::npos)
 		return false;
-
+	std::cout << req << std::endl;
+	std::cout << "3403485" << std::endl;
 	if (_method.empty()) {
-		if (req.compare(0, 3, "GET") == 0)
+		if (req.compare(0, 4, "GET ") == 0)
 			_method = "GET";
-		else if (req.compare(0, 4, "POST") == 0)
+		else if (req.compare(0, 5, "POST ") == 0)
 			_method = "POST";
+		else if (req.compare(0, 7, "DELETE ") == 0)
+			_method = "DELETE";
 	}
-	if (_method == "GET")
+	if (_method == "GET" || _method == "DELETE")
 		return true;
 
 	if (_method == "POST") {
@@ -98,7 +101,7 @@ bool Request::isValid(const std::string &req) {
 void Request::checkRequest() {
 	if (_method != "GET" && _method != "POST" && _method != "DELETE")
 		throw Http405Exception();
-	if (_version != "HTTP/1.1" && _version != "HTTP/1.0")
+	if (_version != "HTTP/1.1")
 		throw Http400Exception();
 	if (_path.empty())
 		throw Http400Exception();
@@ -131,21 +134,22 @@ separateHeaders(std::vector<std::string> &docRequest) {
 	return headers;
 }
 
-std::vector<std::string> split(const std::string &str, std::string delimiters)
+std::vector<std::string> split(const std::string &str, const std::string &delimiter)
 {
     std::vector<std::string> result;
-    size_t             start = 0;
-    size_t             end   = 0;
-    std::string         token;
+    size_t start = 0;
+    size_t end = 0;
 
-    while (end != std::string::npos)
+    while ((end = str.find(delimiter, start)) != std::string::npos)
     {
-        end = str.find_first_of(delimiters, start);
-        token = str.substr(start, end - start);
+        std::string token = str.substr(start, end - start);
         if (!token.empty())
             result.push_back(token);
-        start = (end == std::string::npos) ? end : end + 1;
+        start = end + delimiter.size();
     }
+    std::string last = str.substr(start);
+    if (!last.empty())
+        result.push_back(last);
     return result;
 }
 
@@ -183,10 +187,8 @@ void Request::printDebug() const
 void Request::parsePostMethod(const std::string &request, size_t body_start)
 {
 	std::vector<std::string> parts = split(request.substr(body_start, _contentLengthBody), "--" + _webKitForm);
-
 	for (size_t i = 0; i + 1 < parts.size(); ++i) {
 		std::string &part = parts[i];
-
 		std::string type;
 		std::string filename;
 		std::string body;
@@ -204,15 +206,14 @@ void Request::parsePostMethod(const std::string &request, size_t body_start)
 			    filename[filename.size() - 1] == '"')
 				filename = filename.substr(1, filename.size() - 2);
 		}
-
 		pos = part.find("\r\n\r\n");
 		if (pos != std::string::npos)
-			body = part.substr(pos + 4);
+		body = part.substr(pos + 4);
 		if (filename.empty())
-			continue;
+		continue;
 		_bodyRequests.push_back(BodyRequest(body, filename, type));
 		int fd = open(("upload/" + filename).c_str(),
-		              O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd < 0)
 			throw Http500Exception();
 		write(fd, body.c_str(), body.size());
@@ -221,7 +222,7 @@ void Request::parsePostMethod(const std::string &request, size_t body_start)
 }
 
 // parse request
-void Request::parse(const std::string &request)
+void Request::parse(const std::string &request, const ServerConfig &config)
 {
 	std::string line;
 	std::vector<std::string> docRequest;
@@ -230,8 +231,7 @@ void Request::parse(const std::string &request)
 	if (body_start == std::string::npos)
 		return;
 	body_start += 4; // 4 = \r\n\r\n
-
-	if (_method == "POST" && _contentLengthBody > 0)
+	if (_method == "POST" && static_cast<long long>(_contentLengthBody) < config.client_max_body_size )
 		parsePostMethod(request, body_start);
 	else
 		_bodyRequests.clear();
@@ -284,7 +284,6 @@ void Request::setCurrentLocations(const ServerConfig &serverConfig)
 	std::vector<LocationConfig> serverLocations = serverConfig.locations;
 	std::string concatened;
 	
-	std::cout << "JE SUIS DANS SETCURRENTLOCATIONS" << std::endl;
 	vPath = split(_path, "/");
 	while (i < vPath.size()) {
 		concatened = concatened + '/' + vPath[i];
@@ -294,12 +293,10 @@ void Request::setCurrentLocations(const ServerConfig &serverConfig)
 			if (concatened == serverLocations[j].path)
 			{
 				_currentLocations.push_back(serverLocations[j]);
-				std::cout << "AAAAAAAAAAAAAAAAA_currentLocations = " << concatened << std::endl;
 			}
 			else if (slashed == serverLocations[j].path)
 			{
 				_currentLocations.push_back(serverLocations[j]);
-				std::cout << "AAAAAAAAAAAAAAAAAAAAAAAA_currentLocations = " << slashed << std::endl;
 				
 			}
 			j++;
