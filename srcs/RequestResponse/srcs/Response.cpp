@@ -13,17 +13,19 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <cerrno>
+#include "vector"
 
 static bool _finalAutoIndex;
-
-
-
 
 void Response::setRequest(Request &req) {
 	_request = &req;
 	_isCgi = false;
 	setMimes();
 	setErrorPages();
+}
+
+void Response::buildErrorHeader() {
+    _header = buildHeader(_body.size(), _statusCode, _statusText);
 }
 
 std::string Response::getErrorPageContent(int code,
@@ -71,7 +73,26 @@ int	check_dir(const std::string &full_path)
 std::string Response::checkUrl(const ServerConfig &config)
 {
 
-    std::string path = config.root + _request->getPath();
+	std::vector<std::string> tempPath = split(_request->getPath(), "/");
+	std::string path = config.root;
+	size_t	i = 0;
+	while(i < tempPath.size())
+	{
+		if(tempPath[i] == "..")
+			tempPath.erase(tempPath.begin() + i);
+		else
+			i++;
+	}
+	i = 0;
+	while(i < tempPath.size())
+	{
+		path = path + '/';
+		path = path + tempPath[i];
+		i++;
+	}
+
+	std::cout << "------------------------------------------------" << std::endl;
+	std::cout << "PAFF = " << path << std::endl;
     _finalAutoIndex = false;
 
     if (_request->getPath() == "/")
@@ -142,6 +163,7 @@ void Response::generate(const ServerConfig &config)
 	
 	// try
 	// {
+	std::cout << "JE SUIS DANS RESPONSE GENERATEEEEE" << std::endl;
 		_request->setCurrentLocations(config);
 		_finalPath = checkUrl(config);
 		if (CgiManager::isCgi(_finalPath))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mvachon <mvachon@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nofanizz <nofanizz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 11:01:51 by nofanizz          #+#    #+#             */
-/*   Updated: 2026/02/26 10:23:06 by mvachon          ###   ########.fr       */
+/*   Updated: 2026/03/04 14:03:58 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Config.hpp"
 #include <cstdlib>
 #include <fcntl.h>
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <sys/socket.h>
@@ -24,7 +25,6 @@ void Request::readRaw(int &fd, bool &closedStatus,
                              std::string &request) {
 	char buffer[BUFFER_SIZE];
 	int n = recv(fd, buffer, sizeof(buffer) - 1, 0);
-
 	if (n <= 0) {
 		closedStatus = true;
 		return;
@@ -47,8 +47,19 @@ void Request::parseContentLength(const std::string &req) {
 	size_t end = req.find("\r\n", pos);
 	if (end == std::string::npos)
 		return;
-
-	_contentLengthBody = std::atoi(req.substr(pos, end - pos).c_str());
+	std::string value = req.substr(pos, end - pos);
+	if(value.empty())
+		throw Http400Exception();
+	for(size_t i = 0; i < value.size(); i++)
+	{
+		if(!std::isdigit(value[i]))
+			throw Http400Exception();
+	}
+	char *lastchar;
+	long length = strtol(value.c_str(), &lastchar, 10);
+	if(*lastchar != '\0' || length < 0)
+		throw Http400Exception();
+	_contentLengthBody = static_cast<size_t>(length); //TODO je fais quoi si ca overflow ? On limite la size ?
 }
 
 void Request::parseWebKitForm(const std::string &headers) {
@@ -73,8 +84,6 @@ bool Request::isValid(const std::string &req) {
 	size_t header_end = req.find("\r\n\r\n");
 	if (header_end == std::string::npos)
 		return false;
-	std::cout << req << std::endl;
-	std::cout << "3403485" << std::endl;
 	if (_method.empty()) {
 		if (req.compare(0, 4, "GET ") == 0)
 			_method = "GET";
@@ -85,7 +94,6 @@ bool Request::isValid(const std::string &req) {
 	}
 	if (_method == "GET" || _method == "DELETE")
 		return true;
-
 	if (_method == "POST") {
 		if (_contentLengthBody == static_cast<size_t>(-1)) {
 			parseContentLength(req);
@@ -103,35 +111,81 @@ void Request::checkRequest() {
 		throw Http405Exception();
 	if (_version != "HTTP/1.1")
 		throw Http400Exception();
+	if (_headers.find("Host") == _headers.end())
+		throw Http400Exception();
+	if(_method == "POST" && _headers.find("Content-Length") == _headers.end())
+		throw Http411Exception(); // TODO c'est une exception 411 qu'i lfaut faire
 	if (_path.empty())
 		throw Http400Exception();
+}
+
+size_t	findSpaceLength(size_t pos, std::string line)
+{
+	size_t count = pos;
+	while(line[pos] && isspace(line[pos]))
+		pos++;
+	count = pos - count;
+	return(count);
+}
+
+size_t	findValueLength(size_t pos, std::string line)
+{
+	size_t count = pos;
+	while(line[pos] && !(isspace(line[pos])))
+		pos++;
+	count = pos - count;
+	return(count);
+}
+
+int	keyCheck(const std::string &key)
+{
+	size_t	i = 0;
+	while(key[i])
+		i++;
+	if(i != key.size())
+		return(1);
+	return(0);
 }
 
 // helper function for parsing
 static std::map<std::string, std::string>
 separateHeaders(std::vector<std::string> &docRequest) {
-	std::map<std::string, std::string> headers;
+    std::map<std::string, std::string> headers;
 
-	for (size_t i = 1; i < docRequest.size(); ++i) {
-		std::string &line = docRequest[i];
+    for (size_t i = 1; i < docRequest.size(); ++i) {
+        std::string line = docRequest[i];
 
-		if (line.empty())
-			break;
+        // 1. Nettoyage rapide du \r final s'il existe
+        if (!line.empty() && line[line.size() - 1] == '\r')
+            line.erase(line.size() - 1);
 
-		size_t colonPos = line.find(':');
-		if (colonPos == std::string::npos)
-			continue;
+        if (line.empty())
+            break;
 
-		std::string key = line.substr(0, colonPos);
-		std::string value = line.substr(colonPos + 1);
+        size_t colonPos = line.find(':');
+        if (colonPos == std::string::npos)
+            continue;
 
-		size_t start = value.find_first_not_of(" \t");
-		if (start != std::string::npos)
-			value = value.substr(start);
-		headers[key] = value;
-	}
-
-	return headers;
+        // 2. Extraire la clé
+        std::string key = line.substr(0, colonPos);
+		if(isspace(key[key.size() - 1]))
+			throw (Http400Exception());
+        // 3. Extraire la valeur et trimmer les espaces au début et à la fin
+        std::string value = line.substr(colonPos + 1);
+        size_t first = value.find_first_not_of(" \t");
+        if (first == std::string::npos)
+		{
+			throw (Http400Exception());
+            //value = "";
+        }
+		else
+		{
+            size_t last = value.find_last_not_of(" \t");
+            value = value.substr(first, (last - first + 1));
+        }
+        headers[key] = value;
+    }
+    return headers;
 }
 
 std::vector<std::string> split(const std::string &str, const std::string &delimiter)
@@ -212,12 +266,12 @@ void Request::parsePostMethod(const std::string &request, size_t body_start)
 		if (filename.empty())
 		continue;
 		_bodyRequests.push_back(BodyRequest(body, filename, type));
-		int fd = open(("upload/" + filename).c_str(),
-			O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd < 0)
+		std::ofstream ofs(("upload/" + filename).c_str(), std::ios::binary | std::ios::trunc);
+		if (!ofs.is_open())
 			throw Http500Exception();
-		write(fd, body.c_str(), body.size());
-		close(fd);
+		ofs.write(body.c_str(), body.size());
+		if (ofs.fail())
+			throw Http500Exception();
 	}
 }
 
@@ -231,10 +285,15 @@ void Request::parse(const std::string &request, const ServerConfig &config)
 	if (body_start == std::string::npos)
 		return;
 	body_start += 4; // 4 = \r\n\r\n
-	if (_method == "POST" && static_cast<long long>(_contentLengthBody) < config.client_max_body_size )
+	if (_method == "POST" && static_cast<long long>(_contentLengthBody) <= config.client_max_body_size )
 		parsePostMethod(request, body_start);
 	else
+	{
+		std::cout << "CHOCKBAR DE BZ" << std::endl;
 		_bodyRequests.clear();
+		if(static_cast<long long>(_contentLengthBody) > config.client_max_body_size)
+			throw Http413Exception();
+	}
 
 	for (size_t i = 0; i < request.size(); ++i) {
 		char c = request[i];
@@ -251,7 +310,6 @@ void Request::parse(const std::string &request, const ServerConfig &config)
 		return;
 
 	_headers = separateHeaders(docRequest);
-
 	std::istringstream iss(docRequest[0]);
 	iss >> _method >> _path >> _version;
 
