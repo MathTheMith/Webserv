@@ -54,7 +54,19 @@ void Config::parseServerDirective(ServerConfig &server, const std::string &key,
         for (size_t k = 0; k < codeStr.size(); k++)
             if (!std::isdigit(codeStr[k]))
                 throw Exception("return directive: invalid code -> " + codeStr);
-        server.redirectCode = std::atoi(codeStr.c_str());
+        {
+            static const int validCodes[] = { 301, 302, 307, 308, 400, 403, 404, 405, 408, 411, 413, 414, 500, 505 };
+            static const size_t nCodes = sizeof(validCodes) / sizeof(validCodes[0]);
+            if (codeStr.size() != 3)
+                throw Exception("return directive: unsupported code -> " + codeStr);
+            int code = std::atoi(codeStr.c_str());
+            bool valid = false;
+            for (size_t k = 0; k < nCodes; k++)
+                if (validCodes[k] == code) { valid = true; break; }
+            if (!valid)
+                throw Exception("return directive: unsupported code -> " + codeStr);
+            server.redirectCode = code;
+        }
         server.redirectUrl = url;
         return;
     }
