@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerDirectives.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nofanizz <nofanizz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 10:30:00 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/11 14:33:03 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/26 17:18:51 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void Config::parseServerDirective(ServerConfig &server, const std::string &key,
             if (!std::isdigit(codeStr[k]))
                 throw Exception("return directive: invalid code -> " + codeStr);
         {
-            static const int validCodes[] = { 301, 302, 307, 308, 400, 403, 404, 405, 408, 411, 413, 414, 500, 505 };
+            static const int validCodes[] = { 200, 201, 204, 301, 302, 307, 308, 400, 403, 404, 405, 408, 411, 413, 414, 500, 505 };
             static const size_t nCodes = sizeof(validCodes) / sizeof(validCodes[0]);
             if (codeStr.size() != 3)
                 throw Exception("return directive: unsupported code -> " + codeStr);
