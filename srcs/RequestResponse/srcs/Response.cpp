@@ -273,10 +273,14 @@ void Response::generate(const ServerConfig &config)
 		else
 		{
 			_statusText = statusTextFromCode(loc.redirectCode);
-			_body = loc.redirectUrl;
+			_body = loc.redirectUrl.empty()
+				? getErrorPageContent(loc.redirectCode, config)
+				: loc.redirectUrl;
+			_finalPath = ".html";
 			std::ostringstream len;
 			len << _body.size();
 			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
+																	  "Content-Type: text/html; charset=UTF-8\r\n"
 																	  "Content-Length: " +
 					  len.str() + "\r\n"
 								  "Connection: close\r\n"
@@ -313,10 +317,14 @@ void Response::generate(const ServerConfig &config)
 		else
 		{
 			_statusText = statusTextFromCode(config.redirectCode);
-			_body = config.redirectUrl;
+			_body = config.redirectUrl.empty()
+				? getErrorPageContent(config.redirectCode, config)
+				: config.redirectUrl;
+			_finalPath = ".html";
 			std::ostringstream len;
 			len << _body.size();
 			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
+																	  "Content-Type: text/html; charset=UTF-8\r\n"
 																	  "Content-Length: " +
 					  len.str() + "\r\n"
 								  "Connection: close\r\n"
