@@ -55,7 +55,7 @@ void Config::parseServerDirective(ServerConfig &server, const std::string &key,
             if (!std::isdigit(codeStr[k]))
                 throw Exception("return directive: invalid code -> " + codeStr);
         {
-            static const int validCodes[] = { 200, 201, 204, 301, 302, 307, 308, 400, 403, 404, 405, 408, 411, 413, 414, 500, 505 };
+            static const int validCodes[] = { 200, 201, 204, 301, 302, 307, 308, 400, 401, 403, 404, 405, 408, 411, 413, 414, 500, 505 };
             static const size_t nCodes = sizeof(validCodes) / sizeof(validCodes[0]);
             if (codeStr.size() != 3)
                 throw Exception("return directive: unsupported code -> " + codeStr);

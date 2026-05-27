@@ -258,6 +258,50 @@ void Response::generate(const ServerConfig &config)
 
 	const std::vector<LocationConfig> &locs = _request->getCurrentLocations();
 
+	if (config.redirectCode != 0)
+	{
+		std::ostringstream code;
+		code << config.redirectCode;
+		_statusCode = code.str();
+		if (config.redirectCode >= 300 && config.redirectCode < 400)
+		{
+			if (config.redirectCode == 301)
+				_statusText = "Moved Permanently";
+			else if (config.redirectCode == 302)
+				_statusText = "Found";
+			else if (config.redirectCode == 307)
+				_statusText = "Temporary Redirect";
+			else if (config.redirectCode == 308)
+				_statusText = "Permanent Redirect";
+			else
+				_statusText = "Redirect";
+			_body = "";
+			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
+																																"Location: " +
+								config.redirectUrl + "\r\n"
+																		 "Content-Length: 0\r\n"
+																		 "Connection: close\r\n"
+																		 "\r\n";
+		}
+		else
+		{
+			_statusText = statusTextFromCode(config.redirectCode);
+			_body = config.redirectUrl.empty()
+									? getErrorPageContent(config.redirectCode, config)
+									: config.redirectUrl;
+			_finalPath = ".html";
+			std::ostringstream len;
+			len << _body.size();
+			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
+																																"Content-Type: text/html; charset=UTF-8\r\n"
+																																"Content-Length: " +
+								len.str() + "\r\n"
+														"Connection: close\r\n"
+														"\r\n";
+		}
+		return;
+	}
+
 	if (!locs.empty() && locs.back().redirectCode != 0 && _request->getMethod() == "GET")
 	{
 		const LocationConfig &loc = locs.back();
@@ -290,50 +334,6 @@ void Response::generate(const ServerConfig &config)
 			_body = loc.redirectUrl.empty()
 									? getErrorPageContent(loc.redirectCode, config)
 									: loc.redirectUrl;
-			_finalPath = ".html";
-			std::ostringstream len;
-			len << _body.size();
-			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
-																																"Content-Type: text/html; charset=UTF-8\r\n"
-																																"Content-Length: " +
-								len.str() + "\r\n"
-														"Connection: close\r\n"
-														"\r\n";
-		}
-		return;
-	}
-
-	if (config.redirectCode != 0)
-	{
-		std::ostringstream code;
-		code << config.redirectCode;
-		_statusCode = code.str();
-		if (config.redirectCode >= 300 && config.redirectCode < 400)
-		{
-			if (config.redirectCode == 301)
-				_statusText = "Moved Permanently";
-			else if (config.redirectCode == 302)
-				_statusText = "Found";
-			else if (config.redirectCode == 307)
-				_statusText = "Temporary Redirect";
-			else if (config.redirectCode == 308)
-				_statusText = "Permanent Redirect";
-			else
-				_statusText = "Redirect";
-			_body = "";
-			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
-																																"Location: " +
-								config.redirectUrl + "\r\n"
-																		 "Content-Length: 0\r\n"
-																		 "Connection: close\r\n"
-																		 "\r\n";
-		}
-		else
-		{
-			_statusText = statusTextFromCode(config.redirectCode);
-			_body = config.redirectUrl.empty()
-									? getErrorPageContent(config.redirectCode, config)
-									: config.redirectUrl;
 			_finalPath = ".html";
 			std::ostringstream len;
 			len << _body.size();
