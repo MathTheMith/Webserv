@@ -24,6 +24,8 @@ This project helped us improve our understanding of:
 - poll, poll.h library
 - Team collaboration and project organization
 
+The idea behind it is to reproduce nginx behavior in order to launch proper web servers.
+
 ---
 
 # Instructions
@@ -56,7 +58,7 @@ make
 ## Executable
 
 ```bash
-./webserv ConfigFile.conf
+./webserv Config.conf
 ```
 
 ---
@@ -79,5 +81,4 @@ CGI (common Gateway Interface)
 ## A.I.
 Mainly used for specific cases information and repetitive tasks
 
-- Claude Code
-- Chat GPT
+AI was mainly used to dig deeper into some technical concepts such as poll, and why it was pertinent in our project. In the same ways, it gave us some interesting insights about the way to improve our code and his architecture (nevertheless, it wasn't always pertinent regarding our perception of the project). Finally, It eventually helped us to spot some edge cases which are very important to ensure a propre behavior of our project.
