@@ -6,7 +6,7 @@
 /*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 10:30:00 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/26 17:18:51 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/27 13:49:29 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,12 +155,6 @@ std::string Config::extractValue(const std::vector<std::string> &line, size_t j,
 
 void Config::parseHost(ServerConfig &server, const std::string &value)
 {
-    if (value == "localhost")
-    {
-        server.host = value;
-        return;
-    }
-
     std::istringstream iss(value);
     std::string token;
     int parts = 0;
