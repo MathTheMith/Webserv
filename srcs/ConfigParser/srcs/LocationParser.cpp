@@ -6,7 +6,7 @@
 /*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 10:30:00 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/27 11:45:49 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/27 12:33:07 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ void Config::parseLocationBlock(ServerConfig &server, size_t *i, size_t *j)
 
     if (*j + 1 >= _fileContent[*i].size())
         throw Exception("No path specified for location");
-        
+
     location.path = _fileContent[*i][*j + 1];
-    
+
     if (location.path.empty() || location.path == "{")
         throw Exception("No argument found for the location path");
     if (location.path[0] != '/')
@@ -36,7 +36,7 @@ void Config::parseLocationBlock(ServerConfig &server, size_t *i, size_t *j)
         for (; *j < _fileContent[*i].size(); (*j)++)
         {
             std::string token = _fileContent[*i][*j];
-            
+
             if (token == "{")
             {
                 brace_level++;
@@ -72,7 +72,7 @@ void Config::parseLocationBlock(ServerConfig &server, size_t *i, size_t *j)
 }
 
 void Config::parseLocationDirective(LocationConfig &location, const std::string &key,
-                                     const std::vector<std::string> &line, size_t j)
+                                    const std::vector<std::string> &line, size_t j)
 {
     if (j + 1 >= line.size())
         throw Exception("No argument found for -> " + key);
@@ -141,14 +141,18 @@ void Config::parseLocationDirective(LocationConfig &location, const std::string 
             if (!std::isdigit(codeStr[k]))
                 throw Exception("return directive: invalid code -> " + codeStr);
         {
-            static const int validCodes[] = { 200, 301, 302, 303, 307, 308, 400, 401, 403, 404, 405, 408, 411, 413, 414, 500, 502, 503, 505 };
+            static const int validCodes[] = { 200, 301, 302, 303, 307, 308, 400, 401, 403, 404, 405, 408, 411, 413, 414, 500, 502, 503, 505};
             static const size_t nCodes = sizeof(validCodes) / sizeof(validCodes[0]);
             if (codeStr.size() != 3)
                 throw Exception("return directive: unsupported code -> " + codeStr);
             int code = std::atoi(codeStr.c_str());
             bool valid = false;
             for (size_t k = 0; k < nCodes; k++)
-                if (validCodes[k] == code) { valid = true; break; }
+                if (validCodes[k] == code)
+                {
+                    valid = true;
+                    break;
+                }
             if (!valid)
                 throw Exception("return directive: unsupported code -> " + codeStr);
             location.redirectCode = code;

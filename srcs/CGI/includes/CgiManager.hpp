@@ -21,18 +21,16 @@ private:
 	int _fdOut[2];
 	pid_t _pid;
 
-	// function
+	// functions
 	void buildEnv();
-	char **envToCharArray() const; // used by function execv
+	char **envToCharArray() const;
 
 public:
 	// constructor
 	CgiManager(Client &client, std::string &scriptPath, std::string &interpreter);
 	~CgiManager() {}
 
-	// static function — returns interpreter path if CGI, empty string otherwise
 	static std::string getCgiInterpreter(const std::string &path, const Request &req);
 
-	// function
 	bool start();
 };

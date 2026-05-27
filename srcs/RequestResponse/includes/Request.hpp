@@ -30,16 +30,16 @@ class BodyRequest {
 
 class Request {
   private:
-	std::string _method;  // GET POST DELETE
-	std::string _path;    // file
-	std::string _query;   // args for cgi script
-	std::string _version; // HTTP/1.1 usually
+	std::string _method;
+	std::string _path;
+	std::string _query;
+	std::string _version;
 	size_t _contentLengthBody;
 	std::string _webKitForm;
 	std::string _body;
-	std::map<std::string, std::string> _headers; // headers
-	std::vector<BodyRequest> _bodyRequests;      // body content
-	std::vector<LocationConfig> _currentLocations; // matching locations
+	std::map<std::string, std::string> _headers;
+	std::vector<BodyRequest> _bodyRequests;
+	std::vector<LocationConfig> _currentLocations;
 
   public:
 	Request() : _contentLengthBody(-1) {}

@@ -24,7 +24,6 @@ static std::string extractHostFromRaw(const std::string &raw)
 	size_t pos = lower.find("\r\nhost:");
 	if (pos == std::string::npos)
 	{
-		// Try first line in case Host is the first header
 		pos = lower.find("host:");
 		if (pos != 0)
 			return "";
@@ -39,7 +38,6 @@ static std::string extractHostFromRaw(const std::string &raw)
 	if (end == std::string::npos)
 		end = headers.size();
 	std::string host = headers.substr(pos, end - pos);
-	// Strip port suffix if present
 	size_t colon = host.rfind(':');
 	if (colon != std::string::npos)
 		host = host.substr(0, colon);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nofanizz <nofanizz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 11:58:11 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/11 16:11:31 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/27 12:33:26 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,9 @@ typedef std::map<std::pair<std::string, int>, std::vector<ServerConfig> > Server
 
 void signalHandler(int)
 {
-	// if (signal == SIGINT) {
 	std::cout << std::endl;
 	WebServer::destroy();
 	throw Exception("Ctrl + C detected");
-	// }
 }
 
 static bool isBindable(const std::string &host, int port)

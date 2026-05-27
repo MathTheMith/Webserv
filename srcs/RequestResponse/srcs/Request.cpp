@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarcucc <lmarcucc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 11:01:51 by nofanizz          #+#    #+#             */
-/*   Updated: 2026/05/04 16:07:45 by lmarcucc         ###   ########.fr       */
+/*   Updated: 2026/05/27 12:44:56 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -412,7 +412,6 @@ static std::string unchunkBody(const std::string &chunked)
 	return result;
 }
 
-// parse request
 void Request::parse(const std::string &request, const ServerConfig &config)
 {
 	std::string line;
@@ -453,7 +452,7 @@ void Request::parse(const std::string &request, const ServerConfig &config)
 		_version = reqLine.substr(p2 + 1);
 	}
 
-	size_t queryCheck = _path.find("?"); // checks for queries
+	size_t queryCheck = _path.find("?");
 	if (queryCheck != std::string::npos)
 	{
 		std::string newPath = _path.substr(0, queryCheck);

@@ -6,7 +6,7 @@
 /*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/05 15:01:52 by nofanizz          #+#    #+#             */
-/*   Updated: 2026/05/26 16:47:59 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/27 12:33:38 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,7 +228,7 @@ std::string AutoIndex::initAutoIndex(const std::string &rPath)
 		}
 	}
 	catch (...)
-	{ // TODO ... c'est quoi cette merde !
+	{
 		closedir(dr);
 		throw;
 	}

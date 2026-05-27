@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SetupErrorPages.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nofanizz <nofanizz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:00:51 by mvachon           #+#    #+#             */
-/*   Updated: 2026/04/01 17:56:39 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/27 12:34:01 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

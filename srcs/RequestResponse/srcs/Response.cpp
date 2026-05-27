@@ -7,25 +7,44 @@
 
 static std::string statusTextFromCode(int code)
 {
-	switch (code) {
-		case 200: return "OK";
-		case 201: return "Created";
-		case 204: return "No Content";
-		case 301: return "Moved Permanently";
-		case 302: return "Found";
-		case 307: return "Temporary Redirect";
-		case 308: return "Permanent Redirect";
-		case 400: return "Bad Request";
-		case 403: return "Forbidden";
-		case 404: return "Not Found";
-		case 405: return "Method Not Allowed";
-		case 408: return "Request Timeout";
-		case 411: return "Length Required";
-		case 413: return "Payload Too Large";
-		case 414: return "URI Too Long";
-		case 500: return "Internal Server Error";
-		case 505: return "HTTP Version Not Supported";
-		default:  return "OK";
+	switch (code)
+	{
+	case 200:
+		return "OK";
+	case 201:
+		return "Created";
+	case 204:
+		return "No Content";
+	case 301:
+		return "Moved Permanently";
+	case 302:
+		return "Found";
+	case 307:
+		return "Temporary Redirect";
+	case 308:
+		return "Permanent Redirect";
+	case 400:
+		return "Bad Request";
+	case 403:
+		return "Forbidden";
+	case 404:
+		return "Not Found";
+	case 405:
+		return "Method Not Allowed";
+	case 408:
+		return "Request Timeout";
+	case 411:
+		return "Length Required";
+	case 413:
+		return "Payload Too Large";
+	case 414:
+		return "URI Too Long";
+	case 500:
+		return "Internal Server Error";
+	case 505:
+		return "HTTP Version Not Supported";
+	default:
+		return "OK";
 	}
 }
 
@@ -44,7 +63,7 @@ void Response::buildErrorHeader()
 }
 
 std::string Response::getErrorPageContent(int code,
-										  const ServerConfig &config)
+																					const ServerConfig &config)
 {
 	for (size_t i = 0; i < config.error_page.size(); i++)
 	{
@@ -158,8 +177,8 @@ std::string Response::checkUrl(const ServerConfig &config)
 
 		const std::vector<LocationConfig> &idxLocs = _request->getCurrentLocations();
 		const std::string &indexFile = (!idxLocs.empty() && !idxLocs.back().index.empty())
-										   ? idxLocs.back().index
-										   : config.index;
+																			 ? idxLocs.back().index
+																			 : config.index;
 		std::string indexPath = path + indexFile;
 
 		if (access(indexPath.c_str(), F_OK) != -1)
@@ -183,8 +202,8 @@ std::string Response::checkUrl(const ServerConfig &config)
 }
 
 std::string Response::buildHeader(size_t contentLength,
-								  const std::string &statusCode,
-								  const std::string &statusText)
+																	const std::string &statusCode,
+																	const std::string &statusText)
 {
 	std::ostringstream oss;
 	oss << contentLength;
@@ -198,19 +217,17 @@ std::string Response::buildHeader(size_t contentLength,
 		{
 			std::string ext = _finalPath.substr(pos);
 			std::map<std::string, std::string>::iterator it =
-				_mimeTypes.find(ext);
+					_mimeTypes.find(ext);
 			if (it != _mimeTypes.end())
 				ContentType = it->second;
 		}
 	}
-	// const std::string rescode = statusCode != "301"  ? "301"  : statusCode;
 	std::string header;
 	header = "HTTP/1.1 " + statusCode + " " + statusText + "\r\n" +
-			 "Content-Type: " + ContentType + "; charset=UTF-8\r\n" +
-			 "Content-Length: " + oss.str() + "\r\n" +
-			 //  "Location:" + _request->getPath()+"\r\n" +
-			 "Connection: close\r\n" +
-			 "\r\n";
+					 "Content-Type: " + ContentType + "; charset=UTF-8\r\n" +
+					 "Content-Length: " + oss.str() + "\r\n" +
+					 "Connection: close\r\n" +
+					 "\r\n";
 
 	return header;
 }
@@ -240,8 +257,6 @@ void Response::generate(const ServerConfig &config)
 	_statusText = "OK";
 	_isCgi = false;
 
-	// try
-	// {
 	const std::vector<LocationConfig> &locs = _request->getCurrentLocations();
 
 	if (!locs.empty() && locs.back().redirectCode != 0 && _request->getMethod() == "GET")
@@ -264,27 +279,27 @@ void Response::generate(const ServerConfig &config)
 				_statusText = "Redirect";
 			_body = "";
 			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
-																	  "Location: " +
-					  loc.redirectUrl + "\r\n"
-									   "Content-Length: 0\r\n"
-									   "Connection: close\r\n"
-									   "\r\n";
+																																"Location: " +
+								loc.redirectUrl + "\r\n"
+																	"Content-Length: 0\r\n"
+																	"Connection: close\r\n"
+																	"\r\n";
 		}
 		else
 		{
 			_statusText = statusTextFromCode(loc.redirectCode);
 			_body = loc.redirectUrl.empty()
-				? getErrorPageContent(loc.redirectCode, config)
-				: loc.redirectUrl;
+									? getErrorPageContent(loc.redirectCode, config)
+									: loc.redirectUrl;
 			_finalPath = ".html";
 			std::ostringstream len;
 			len << _body.size();
 			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
-																	  "Content-Type: text/html; charset=UTF-8\r\n"
-																	  "Content-Length: " +
-					  len.str() + "\r\n"
-								  "Connection: close\r\n"
-								  "\r\n";
+																																"Content-Type: text/html; charset=UTF-8\r\n"
+																																"Content-Length: " +
+								len.str() + "\r\n"
+														"Connection: close\r\n"
+														"\r\n";
 		}
 		return;
 	}
@@ -308,27 +323,27 @@ void Response::generate(const ServerConfig &config)
 				_statusText = "Redirect";
 			_body = "";
 			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
-																	  "Location: " +
-					  config.redirectUrl + "\r\n"
-										   "Content-Length: 0\r\n"
-										   "Connection: close\r\n"
-										   "\r\n";
+																																"Location: " +
+								config.redirectUrl + "\r\n"
+																		 "Content-Length: 0\r\n"
+																		 "Connection: close\r\n"
+																		 "\r\n";
 		}
 		else
 		{
 			_statusText = statusTextFromCode(config.redirectCode);
 			_body = config.redirectUrl.empty()
-				? getErrorPageContent(config.redirectCode, config)
-				: config.redirectUrl;
+									? getErrorPageContent(config.redirectCode, config)
+									: config.redirectUrl;
 			_finalPath = ".html";
 			std::ostringstream len;
 			len << _body.size();
 			_header = "HTTP/1.1 " + _statusCode + " " + _statusText + "\r\n"
-																	  "Content-Type: text/html; charset=UTF-8\r\n"
-																	  "Content-Length: " +
-					  len.str() + "\r\n"
-								  "Connection: close\r\n"
-								  "\r\n";
+																																"Content-Type: text/html; charset=UTF-8\r\n"
+																																"Content-Length: " +
+								len.str() + "\r\n"
+														"Connection: close\r\n"
+														"\r\n";
 		}
 		return;
 	}
@@ -341,11 +356,11 @@ void Response::generate(const ServerConfig &config)
 		_statusText = "Moved Permanently";
 		_body = "";
 		_header = "HTTP/1.1 301 Moved Permanently\r\n"
-				  "Location: " +
-				  _redirectLocation + "\r\n"
-									  "Content-Length: 0\r\n"
-									  "Connection: close\r\n"
-									  "\r\n";
+							"Location: " +
+							_redirectLocation + "\r\n"
+																	"Content-Length: 0\r\n"
+																	"Connection: close\r\n"
+																	"\r\n";
 		return;
 	}
 
@@ -372,18 +387,6 @@ void Response::generate(const ServerConfig &config)
 	}
 	else
 		_body = readFile(_finalPath);
-	// } catch (const HttpException &e)
-	// {
-	// 	int errorCode = e.getStatusCode();
-	// 	std::ostringstream oss;
-	// 	oss << errorCode;
-
-	// 	_statusCode = oss.str();
-	// 	_statusText = e.getStatusText();
-	// 	_body = getErrorPageContent(errorCode, config);
-	// 	_finalPath = ".html";
-	// 	_isCgi = false;
-	// }
 
 	_request->setPath(_finalPath);
 	if (!_isCgi)
@@ -398,15 +401,21 @@ std::string Response::getFullResponse()
 	std::string cgiHeaderBlock;
 	std::string cgiBody;
 	size_t sep = _body.find("\r\n\r\n");
-	if (sep != std::string::npos) {
+	if (sep != std::string::npos)
+	{
 		cgiHeaderBlock = _body.substr(0, sep);
 		cgiBody = _body.substr(sep + 4);
-	} else {
+	}
+	else
+	{
 		sep = _body.find("\n\n");
-		if (sep != std::string::npos) {
+		if (sep != std::string::npos)
+		{
 			cgiHeaderBlock = _body.substr(0, sep);
 			cgiBody = _body.substr(sep + 2);
-		} else {
+		}
+		else
+		{
 			cgiBody = _body;
 		}
 	}
@@ -417,13 +426,17 @@ std::string Response::getFullResponse()
 	bool hasContentLength = false;
 
 	size_t pos = 0;
-	while (pos < cgiHeaderBlock.size()) {
+	while (pos < cgiHeaderBlock.size())
+	{
 		size_t end = cgiHeaderBlock.find('\n', pos);
 		std::string line;
-		if (end == std::string::npos) {
+		if (end == std::string::npos)
+		{
 			line = cgiHeaderBlock.substr(pos);
 			pos = cgiHeaderBlock.size();
-		} else {
+		}
+		else
+		{
 			line = cgiHeaderBlock.substr(pos, end - pos);
 			pos = end + 1;
 		}
@@ -437,20 +450,27 @@ std::string Response::getFullResponse()
 		for (size_t i = 0; i < key.size(); i++)
 			key[i] = std::tolower((unsigned char)key[i]);
 
-		if (key == "status" && colon != std::string::npos) {
+		if (key == "status" && colon != std::string::npos)
+		{
 			std::string val = line.substr(colon + 1);
 			size_t start = val.find_first_not_of(" \t");
-			if (start != std::string::npos) {
+			if (start != std::string::npos)
+			{
 				val = val.substr(start);
 				size_t space = val.find(' ');
-				if (space != std::string::npos) {
+				if (space != std::string::npos)
+				{
 					statusCode = val.substr(0, space);
 					statusText = val.substr(space + 1);
-				} else {
+				}
+				else
+				{
 					statusCode = val;
 				}
 			}
-		} else {
+		}
+		else
+		{
 			if (key == "content-length")
 				hasContentLength = true;
 			filteredHeaders += line + "\r\n";

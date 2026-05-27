@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mvachon <mvachon@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 20:24:07 by mvachon           #+#    #+#             */
-/*   Updated: 2026/03/26 13:05:46 by mvachon          ###   ########.fr       */
+/*   Updated: 2026/05/27 12:44:18 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ struct LocationConfig
     std::string root;
     std::string index;
     std::string upload_dir;
-    int autoindex; // -1 = inherit from server, 0 = off, 1 = on
+    int autoindex;
     std::vector<std::string> allowed_methods;
     int         redirectCode;
     std::string redirectUrl;

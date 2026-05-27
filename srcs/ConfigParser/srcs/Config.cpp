@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nofanizz <nofanizz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 20:22:15 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/11 15:52:19 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/27 12:44:07 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ void Config::validateVirtualHosts()
         {
             if (_servers[k].port != _servers[j].port)
                 continue;
-            // Same port — only allowed if server_names differ
             const std::vector<std::string> &names_j = _servers[j].server_names;
             const std::vector<std::string> &names_k = _servers[k].server_names;
             for (size_t a = 0; a < names_j.size(); a++)
