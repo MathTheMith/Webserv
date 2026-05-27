@@ -6,7 +6,7 @@
 /*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 12:43:59 by nofanizz          #+#    #+#             */
-/*   Updated: 2026/05/27 12:44:01 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/27 13:54:46 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,4 @@ public:
 	void onTimeout();
 };
 
-#endif // CGI_WRITER_HPP
+#endif

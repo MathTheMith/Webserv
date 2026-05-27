@@ -1,18 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   CgiManager.cpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/27 13:55:32 by nofanizz          #+#    #+#             */
+/*   Updated: 2026/05/27 13:57:03 by nofanizz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "CgiManager.hpp"
 #include "WebServer.hpp"
 #include "CgiWriter.hpp"
 #include "CgiReader.hpp"
 #include "HttpExceptions.hpp"
-#include <cerrno>
 #include <cstring>
-#include <iostream>
-#include <stdio.h>
 #include <stdlib.h>
-#include <sys/wait.h>
 #include <unistd.h>
-#include <poll.h>
 
-// constructor
 CgiManager::CgiManager(Client &client, std::string &scriptPath, std::string &interpreter)
 	: _request(client.getRequest()),
 	  _scriptPath(scriptPath),
@@ -41,7 +47,6 @@ CgiManager::CgiManager(Client &client, std::string &scriptPath, std::string &int
 	}
 }
 
-// Returns the interpreter path if the request maps to a CGI script, empty string otherwise
 std::string CgiManager::getCgiInterpreter(const std::string &path, const Request &req)
 {
 	size_t dot = path.rfind('.');
@@ -59,14 +64,12 @@ std::string CgiManager::getCgiInterpreter(const std::string &path, const Request
 }
 
 static void freeEnv(char **env) {
-	for (size_t i = 0; env[i] != NULL; i++)
-	{
+	for (size_t i = 0; env[i] != NULL; i++) {
 		free(env[i]);
 	}
 	delete[] env;
 }
 
-// functions
 void CgiManager::buildEnv() {
 	_env.push_back("REQUEST_METHOD=" + _request.getMethod());
 	_env.push_back("SCRIPT_FILENAME=" + _scriptPath);
@@ -95,7 +98,6 @@ char **CgiManager::envToCharArray() const {
 	return envp;
 }
 
-// execute the cgi script
 bool CgiManager::start() {
 	buildEnv();
 
@@ -118,7 +120,6 @@ bool CgiManager::start() {
 			NULL
 		};
 		execve(argv[0], argv, envp);
-		perror(_scriptPath.c_str());
 		freeEnv(envp);
 		WebServer::destroy();
 		_env.~vector();

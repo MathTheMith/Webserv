@@ -1,12 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   CgiWriter.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/27 13:55:10 by nofanizz          #+#    #+#             */
+/*   Updated: 2026/05/27 13:59:24 by nofanizz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "CgiWriter.hpp"
 #include "WebServer.hpp"
-#include <iostream>
 #include <poll.h>
 #include <fcntl.h>
 
 CgiWriter::CgiWriter(const int fd, const std::string body) : _timedOut(false), _body(body), _written(0)
 {
-	std::cout << "CGI BODY=" << _body << std::endl;
 	_fd = fd;
 	_fullSize = body.size();
 	_closedStatus = false;
@@ -26,17 +36,14 @@ void CgiWriter::pollOutHandler() {
 		toSend = _fullSize - _written;
 
 	const char *to_write = _body.data() + _written;
-	std::cerr << to_write << std::endl;
 	ssize_t bytesWriten = write(_fd, to_write, toSend);
 	if (bytesWriten == -1) {
-		perror("write: ");
 		_events = 0;
 		_closedStatus = true;
 		return ;
 	}
 	_written += bytesWriten;
 	if (_written == _fullSize) {
-		std::cout << "all" << std::endl;
 		_events = 0;
 		_closedStatus = true;
 	}

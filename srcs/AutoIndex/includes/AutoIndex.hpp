@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AutoIndex.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nofanizz <nofanizz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/05 15:35:57 by nofanizz          #+#    #+#             */
-/*   Updated: 2026/05/11 12:13:41 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/27 13:53:15 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ class AutoIndex
 		//basics
 		AutoIndex(const std::string &root, const std::string &location);
 		
-		
 		//methods
 		std::string initAutoIndex(const std::string &rPath);
 		std::string replaceTemplate(struct dirent &sdir, const std::string &rPath);
@@ -45,41 +44,3 @@ class AutoIndex
 };
 
 #endif
-
-
-//-------------------------------------------FIRST_PART
-
-// <!doctype html>
-// <html lang='fr'>
-//   <style>
-//     .tab {
-//       display:grid;
-//       grid-template-columns: repeat(3, auto);
-//     }
-//     .tab > div {
-
-//     }
-//     .column {
-//       border: solid;
-//     }
-//     .column > span{
-//       display: block;
-//       background-color: red;
-//       text-align: center;
-//     }
-//   </style>
-
-//   <head>
-//     <meta charset='utf-8' />
-//     <title>Titre de la page</title>
-//     <link rel='stylesheet' href='style.css' />
-//     <script src='script.js'></script>
-//   </head>
-//   <body>
-//     <section>
-//       <div class='tab'>
-
-//--------------------------------------------LAST_PART
-//     </section>
-//   </body>
-// </html>

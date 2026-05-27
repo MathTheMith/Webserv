@@ -16,7 +16,6 @@
 #include <cerrno>
 #include <cstdlib>
 #include <fstream>
-#include <iostream>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -283,41 +282,6 @@ static std::string urlDecode(const std::string &str)
 			result += str[i];
 	}
 	return result;
-}
-
-void printSplitDebug(const std::vector<std::string> &v)
-{
-	for (size_t i = 0; i < v.size(); ++i)
-	{
-		std::cout << "[" << i << "] ";
-		for (size_t j = 0; j < v[i].size(); ++j)
-		{
-			if (v[i][j] == '\r')
-				std::cout << "\\r";
-			else
-				std::cout << v[i][j];
-		}
-		std::cout << std::endl;
-	}
-}
-
-void Request::printDebug() const
-{
-	std::cout << "===== BODY DEBUG =====" << std::endl;
-	std::cout << "Nb body parts: " << _bodyRequests.size() << std::endl;
-
-	for (size_t i = 0; i < _bodyRequests.size(); ++i)
-	{
-		std::cout << "\n[Part " << i << "]" << std::endl;
-		std::cout << "Type     : " << _bodyRequests[i].getType() << std::endl;
-		std::cout << "Filename : " << _bodyRequests[i].getFilename()
-				  << std::endl;
-		std::cout << "Body :\n"
-				  << std::endl;
-		std::cout << _bodyRequests[i].getBody() << std::endl;
-	}
-
-	std::cout << "======================" << std::endl;
 }
 
 void Request::parsePostMethod(const std::string &uploadDir)

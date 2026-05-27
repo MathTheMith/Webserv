@@ -83,7 +83,6 @@ int Config::parseConfigFile()
     }
     
     validateVirtualHosts();
-    printServers();
     return 1;
 }
 

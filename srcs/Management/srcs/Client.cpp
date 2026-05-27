@@ -123,14 +123,11 @@ void Client::pollInHandler()
 				_response.generate(_activeConfig);
 				_events = POLLOUT;
 			}
-			std::cout << _rawRequest << std::endl;
-			std::cout << "===============================" << std::endl;
 		}
 	}
 	catch (const HttpException &e)
 	{
 		const int errorCode = e.getStatusCode();
-		std::cout << "error code = " << errorCode << std::endl;
 		std::ostringstream oss;
 		oss << errorCode;
 		_request.setPath(".html");

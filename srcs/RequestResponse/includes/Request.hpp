@@ -49,7 +49,6 @@ class Request {
 	bool isValid(const std::string &req, const ServerConfig &config);
 	void checkRequest();
 	void parse(const std::string &request, const ServerConfig &config);
-	void printDebug() const;
 	void parseContentLength(const std::string &req);
 	void parseWebKitForm(const std::string &req);
 	void parsePostMethod(const std::string &uploadDir);

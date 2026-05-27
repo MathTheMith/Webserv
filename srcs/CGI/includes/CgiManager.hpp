@@ -1,4 +1,17 @@
-#pragma once
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   CgiManager.hpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/27 14:09:52 by nofanizz          #+#    #+#             */
+/*   Updated: 2026/05/27 14:09:55 by nofanizz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef CGIMANAGER_HPP
+#define CGIMANAGER_HPP
 
 #include "Request.hpp"
 #include "AManager.hpp"
@@ -34,3 +47,5 @@ public:
 
 	bool start();
 };
+
+#endif

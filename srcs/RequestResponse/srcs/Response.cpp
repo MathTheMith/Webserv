@@ -154,7 +154,6 @@ std::string Response::checkUrl(const ServerConfig &config)
 		}
 	}
 
-	std::cout << "------------------------------------------------" << std::endl;
 	_finalAutoIndex = false;
 	_redirectLocation = "";
 

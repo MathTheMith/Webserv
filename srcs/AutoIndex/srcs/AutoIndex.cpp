@@ -144,7 +144,10 @@ void AutoIndex::replaceName(std::string &newTemplate, struct dirent &sdir)
 {
 	const std::string name = sdir.d_name;
 	std::string test;
-	newTemplate.find("dir") != std::string::npos ? test = "📁 " : test = "";
+	if (newTemplate.find("dir") != std::string::npos)
+		test = "📁 ";
+	else
+		test = "";
 	newTemplate.replace(newTemplate.find("{{ NAME }}"), 10, test + name);
 }
 
