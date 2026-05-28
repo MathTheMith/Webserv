@@ -13,6 +13,7 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "WebServer.hpp"
+#include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <netdb.h>

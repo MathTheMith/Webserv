@@ -13,7 +13,6 @@
 #include "Config.hpp"
 #include <cstdlib>
 #include <sstream>
-#include <ostream>
 
 void Config::parseServerDirective(ServerConfig &server, const std::string &key,
                                   const std::vector<std::string> &line, size_t j)

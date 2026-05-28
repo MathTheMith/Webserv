@@ -13,10 +13,7 @@
 #ifndef AUTOINDEX_HPP
 #define AUTOINDEX_HPP
 
-#include <filesystem>
-#include <iostream>
-#include <vector>
-
+#include <string>
 
 class AutoIndex
 {

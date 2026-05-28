@@ -17,7 +17,6 @@
 #include <sys/stat.h>
 #include <sstream>
 #include <ctime>
-#include <stdlib.h>
 
 std::string AutoIndex::_header =
 		"<!DOCTYPE html>"

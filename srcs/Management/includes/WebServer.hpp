@@ -13,7 +13,6 @@
 #ifndef WEBSERVER_H
 #define WEBSERVER_H
 
-#include <stdio.h>
 #include <map>
 #include <ctime>
 #include <vector>

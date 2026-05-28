@@ -12,7 +12,6 @@
 
 #include "Request.hpp"
 #include "HttpExceptions.hpp"
-#include "Config.hpp"
 #include <cerrno>
 #include <cstdlib>
 #include <fstream>
