@@ -6,7 +6,7 @@
 /*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 20:24:07 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/27 12:44:18 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/28 14:49:49 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,18 @@
 #include <unistd.h>
 #include <string>
 
-class Exception : public std::exception {
-    private:
-        std::string _message;
-    public:
-        explicit Exception(const std::string& message) : _message(message) {}
-        virtual ~Exception() throw() {}
-        virtual const char* what() const throw() {
-            return _message.c_str();
-        }
+class Exception : public std::exception
+{
+private:
+    std::string _message;
+
+public:
+    explicit Exception(const std::string &message) : _message(message) {}
+    virtual ~Exception() throw() {}
+    virtual const char *what() const throw()
+    {
+        return _message.c_str();
+    }
 };
 
 struct LocationConfig
@@ -38,10 +41,10 @@ struct LocationConfig
     std::string upload_dir;
     int autoindex;
     std::vector<std::string> allowed_methods;
-    int         redirectCode;
+    int redirectCode;
     std::string redirectUrl;
     std::map<std::string, std::string> cgi_pass;
-    LocationConfig() : autoindex(-1), redirectCode(0){}
+    LocationConfig() : autoindex(-1), redirectCode(0) {}
 };
 
 struct ErrorPage
@@ -53,65 +56,65 @@ struct ErrorPage
 struct ServerConfig
 {
     ServerConfig();
-    int                         port;
-    std::string                 host;
-    std::vector<std::string>    server_names;
-    std::string                 root;
-    std::string                 index;
-    std::string                 upload_dir;
-    std::vector<ErrorPage>      error_page;
-    long long                   client_max_body_size;
-    bool                        autoindex;
-    std::vector<std::string>    allowed_methods;
-    int                         redirectCode;
-    std::string                 redirectUrl;
-    LocationConfig              defaults;
+    int port;
+    std::string host;
+    std::vector<std::string> server_names;
+    std::string root;
+    std::string index;
+    std::string upload_dir;
+    std::vector<ErrorPage> error_page;
+    long long client_max_body_size;
+    bool autoindex;
+    std::vector<std::string> allowed_methods;
+    int redirectCode;
+    std::string redirectUrl;
+    LocationConfig defaults;
     std::vector<LocationConfig> locations;
 };
 
 class Config
 {
-    private:
-        std::vector<std::vector<std::string> > _fileContent;
-        std::vector<ServerConfig> _servers;
-        std::string _keysServer[11];
-        std::string _keysLocation[8];
+private:
+    std::vector<std::vector<std::string> > _fileContent;
+    std::vector<ServerConfig> _servers;
+    std::string _keysServer[11];
+    std::string _keysLocation[8];
 
-        void initServerKeys();
-        void initLocationKeys();
+    void initServerKeys();
+    void initLocationKeys();
 
-        void parseServerBlock(size_t *i);
-        void parseServerDirective(ServerConfig &server, const std::string &key, 
-                                  const std::vector<std::string> &line, size_t j);
-        std::string extractValue(const std::vector<std::string> &line, size_t j, 
-                                 const std::string &key);
-        
-        void parseHost(ServerConfig &server, const std::string &value);
-        void parsePort(ServerConfig &server, const std::string &value);
-        void parseClientMaxBodySize(ServerConfig &server, const std::string &value);
-        void parseAutoindex(ServerConfig &server, const std::string &value);
-        void parseErrorPage(ServerConfig &server, const std::vector<std::string> &line, size_t j);
-        void parseServerName(ServerConfig &server, const std::vector<std::string> &line, size_t j);
+    void parseServerBlock(size_t *i);
+    void parseServerDirective(ServerConfig &server, const std::string &key,
+                              const std::vector<std::string> &line, size_t j);
+    std::string extractValue(const std::vector<std::string> &line, size_t j,
+                             const std::string &key);
 
-        void parseLocationBlock(ServerConfig &server, size_t *i, size_t *j);
-        void parseLocationDirective(LocationConfig &location, const std::string &key, 
-                                    const std::vector<std::string> &line, size_t j);
-        void parseLocationAutoindex(LocationConfig &location, const std::string &value);
-        void parseAllowMethods(std::vector<std::string> &allowed_method, const std::vector<std::string> &line, size_t j);
+    void parseHost(ServerConfig &server, const std::string &value);
+    void parsePort(ServerConfig &server, const std::string &value);
+    void parseClientMaxBodySize(ServerConfig &server, const std::string &value);
+    void parseAutoindex(ServerConfig &server, const std::string &value);
+    void parseErrorPage(ServerConfig &server, const std::vector<std::string> &line, size_t j);
+    void parseServerName(ServerConfig &server, const std::vector<std::string> &line, size_t j);
 
-        void validateVirtualHosts();
-        
-        int parseConfigFile();
+    void parseLocationBlock(ServerConfig &server, size_t *i, size_t *j);
+    void parseLocationDirective(LocationConfig &location, const std::string &key,
+                                const std::vector<std::string> &line, size_t j);
+    void parseLocationAutoindex(LocationConfig &location, const std::string &value);
+    void parseAllowMethods(std::vector<std::string> &allowed_method, const std::vector<std::string> &line, size_t j);
 
-    public:
-        Config();
-        bool setFile(std::string doc);
-        const std::vector<ServerConfig>& getServers() const;
-        void printServers();
+    void validateVirtualHosts();
+
+    int parseConfigFile();
+
+public:
+    Config();
+    bool setFile(std::string doc);
+    const std::vector<ServerConfig> &getServers() const;
+    void printServers();
 };
 
-void validateServerConfig(const ServerConfig& server);
+void validateServerConfig(const ServerConfig &server);
 std::vector<std::vector<std::string> > splitLinesWords(const std::string &content);
-std::string readFile(const std::string& doc);
+std::string readFile(const std::string &doc);
 
 #endif

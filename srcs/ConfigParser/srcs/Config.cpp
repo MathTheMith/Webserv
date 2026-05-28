@@ -6,7 +6,7 @@
 /*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 20:22:15 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/27 12:44:07 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/28 14:50:49 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void Config::initLocationKeys()
 
 bool Config::setFile(std::string doc)
 {
-    
     try
     {
         std::string content = readFile(doc);
@@ -57,12 +56,12 @@ bool Config::setFile(std::string doc)
         parseConfigFile();
         return 1;
     }
-    catch (const Exception& e)
+    catch (const Exception &e)
     {
         std::cout << "Configuration Error: " << e.what() << std::endl;
         return 0;
     }
-    catch (const std::exception& e)
+    catch (const std::exception &e)
     {
         std::cout << "Unexpected Error: " << e.what() << std::endl;
         return 0;
@@ -81,7 +80,7 @@ int Config::parseConfigFile()
         else
             i++;
     }
-    
+
     validateVirtualHosts();
     return 1;
 }
@@ -116,8 +115,7 @@ void Config::validateVirtualHosts()
     }
 }
 
-const std::vector<ServerConfig>& Config::getServers() const
+const std::vector<ServerConfig> &Config::getServers() const
 {
     return _servers;
 }
-

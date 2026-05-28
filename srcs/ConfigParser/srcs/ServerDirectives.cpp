@@ -6,7 +6,7 @@
 /*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 10:30:00 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/27 13:49:29 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/28 14:51:19 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <ostream>
 
 void Config::parseServerDirective(ServerConfig &server, const std::string &key,
-                                   const std::vector<std::string> &line, size_t j)
+                                  const std::vector<std::string> &line, size_t j)
 {
     if (j + 1 >= line.size())
         throw Exception("No argument found for -> " + key);
@@ -55,14 +55,18 @@ void Config::parseServerDirective(ServerConfig &server, const std::string &key,
             if (!std::isdigit(codeStr[k]))
                 throw Exception("return directive: invalid code -> " + codeStr);
         {
-            static const int validCodes[] = { 200, 201, 204, 301, 302, 307, 308, 400, 401, 403, 404, 405, 408, 411, 413, 414, 500, 505 };
+            static const int validCodes[] = {200, 201, 204, 301, 302, 307, 308, 400, 401, 403, 404, 405, 408, 411, 413, 414, 500, 505};
             static const size_t nCodes = sizeof(validCodes) / sizeof(validCodes[0]);
             if (codeStr.size() != 3)
                 throw Exception("return directive: unsupported code -> " + codeStr);
             int code = std::atoi(codeStr.c_str());
             bool valid = false;
             for (size_t k = 0; k < nCodes; k++)
-                if (validCodes[k] == code) { valid = true; break; }
+                if (validCodes[k] == code)
+                {
+                    valid = true;
+                    break;
+                }
             if (!valid)
                 throw Exception("return directive: unsupported code -> " + codeStr);
             server.redirectCode = code;
@@ -122,8 +126,8 @@ void Config::parseServerName(ServerConfig &server, const std::vector<std::string
         throw Exception("No semicolon on the line -> server_name");
 }
 
-std::string Config::extractValue(const std::vector<std::string> &line, size_t j, 
-                                  const std::string &key)
+std::string Config::extractValue(const std::vector<std::string> &line, size_t j,
+                                 const std::string &key)
 {
     bool semicolon = false;
     std::string value = line[j + 1];
@@ -182,7 +186,7 @@ void Config::parsePort(ServerConfig &server, const std::string &value)
 {
     std::istringstream iss(value);
     long long tmp;
-    
+
     if (!(iss >> tmp) || !iss.eof())
         throw Exception("Invalid port value -> " + value);
 
@@ -196,10 +200,10 @@ void Config::parseClientMaxBodySize(ServerConfig &server, const std::string &val
 {
     std::istringstream iss(value);
     long long tmp;
-    
+
     if (!(iss >> tmp) || !iss.eof())
         throw Exception("Invalid client_max_body_size -> " + value);
-    
+
     if (tmp < 0)
         throw Exception("client_max_body_size must be positive -> " + value);
 
@@ -230,7 +234,6 @@ void Config::parseErrorPage(ServerConfig &server, const std::vector<std::string>
     if (!semicolon)
         throw Exception("No semicolon on the line -> error_page");
 
-    // iterate over all codes between "error_page" and the path
     for (size_t k = j + 1; k < line.size() - 1; k++)
     {
         std::istringstream iss(line[k]);

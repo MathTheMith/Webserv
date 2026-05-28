@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/28 14:57:02 by nofanizz          #+#    #+#             */
+/*   Updated: 2026/05/28 14:57:05 by nofanizz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Server.hpp"
 #include "Client.hpp"
 #include "WebServer.hpp"
-#include <cstring> // Pour memset
+#include <cstring>
 #include <iostream>
-#include <netdb.h> // Obligatoire pour getaddrinfo
+#include <netdb.h>
 #include <poll.h>
 
 Server::Server(const std::vector<ServerConfig> &configs) : _serverConfigs(configs)

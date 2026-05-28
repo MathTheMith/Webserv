@@ -6,7 +6,7 @@
 /*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:00:51 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/27 12:34:01 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/28 14:46:56 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void Response::setErrorPages()
 {
-    // 400
     _errorPages[400] =
         "<!DOCTYPE html>\n"
         "<html lang=\"fr\">\n"
@@ -62,7 +61,6 @@ void Response::setErrorPages()
         "</body>\n"
         "</html>\n";
 
-    // 403
     _errorPages[403] =
         "<!DOCTYPE html>\n"
         "<html lang=\"fr\">\n"
@@ -110,7 +108,6 @@ void Response::setErrorPages()
         "</body>\n"
         "</html>\n";
 
-    // 404
     _errorPages[404] =
         "<!DOCTYPE html>\n"
         "<html lang=\"fr\">\n"
@@ -174,7 +171,6 @@ void Response::setErrorPages()
         "</body>\n"
         "</html>\n";
 
-    // 411
     _errorPages[411] =
         "<!DOCTYPE html>\n"
         "<html lang=\"fr\">\n"
@@ -222,7 +218,6 @@ void Response::setErrorPages()
         "</body>\n"
         "</html>\n";
 
-    // 413
     _errorPages[413] =
         "<!DOCTYPE html>\n"
         "<html lang=\"fr\">\n"
@@ -270,7 +265,6 @@ void Response::setErrorPages()
         "</body>\n"
         "</html>\n";
 
-    // 405
     _errorPages[405] =
         "<!DOCTYPE html>\n"
         "<html lang=\"fr\">\n"
@@ -318,7 +312,6 @@ void Response::setErrorPages()
         "</body>\n"
         "</html>\n";
 
-    // 408
     _errorPages[408] =
         "<!DOCTYPE html>\n"
         "<html lang=\"fr\">\n"
@@ -366,7 +359,6 @@ void Response::setErrorPages()
         "</body>\n"
         "</html>\n";
 
-    // 414
     _errorPages[414] =
         "<!DOCTYPE html>\n"
         "<html lang=\"fr\">\n"
@@ -414,7 +406,6 @@ void Response::setErrorPages()
         "</body>\n"
         "</html>\n";
 
-    // 505
     _errorPages[505] =
         "<!DOCTYPE html>\n"
         "<html lang=\"fr\">\n"

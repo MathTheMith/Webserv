@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/28 14:57:24 by nofanizz          #+#    #+#             */
+/*   Updated: 2026/05/28 14:57:27 by nofanizz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "Client.hpp"
 #include "Request.hpp"
@@ -107,7 +118,8 @@ void Client::pollInHandler()
 			_response.checkAllowedMethods(_activeConfig);
 
 			std::string interpreter = CgiManager::getCgiInterpreter(_request.getPath(), _request);
-			if (!interpreter.empty()) {
+			if (!interpreter.empty())
+			{
 				const std::vector<LocationConfig> &locs = _request.getCurrentLocations();
 				std::string root = _activeConfig.root;
 				if (!locs.empty() && !locs.back().root.empty())
@@ -119,7 +131,8 @@ void Client::pollInHandler()
 				_cgi = true;
 				_startTime = std::time(NULL);
 			}
-			else {
+			else
+			{
 				_response.generate(_activeConfig);
 				_events = POLLOUT;
 			}
@@ -154,7 +167,8 @@ void Client::pollInHandler()
 	}
 }
 
-bool Client::isTimeout(time_t timeNow) {
+bool Client::isTimeout(time_t timeNow)
+{
 	if (_cgi)
 		return false;
 	return (timeNow - _startTime > 5);
@@ -168,10 +182,10 @@ void Client::onTimeout()
 	std::string body = _response.getErrorPageContent(408, _activeConfig);
 	std::ostringstream header;
 	header << "HTTP/1.1 408 Request Timeout\r\n"
-		   << "Content-Type: text/html; charset=UTF-8\r\n"
-		   << "Content-Length: " << body.size() << "\r\n"
-		   << "Connection: close\r\n"
-		   << "\r\n";
+				 << "Content-Type: text/html; charset=UTF-8\r\n"
+				 << "Content-Length: " << body.size() << "\r\n"
+				 << "Connection: close\r\n"
+				 << "\r\n";
 	_sendBuffer = header.str() + body;
 	_sendOffset = 0;
 	_events = POLLOUT;
@@ -202,8 +216,10 @@ void Client::pollOutHandler()
 	}
 }
 
-void Client::setCgiOutput(const std::string &output, const int error) {
-	if (error) {
+void Client::setCgiOutput(const std::string &output, const int error)
+{
+	if (error)
+	{
 		std::ostringstream oss;
 		oss << error;
 		_response.setIsCgi(false);

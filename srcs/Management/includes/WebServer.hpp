@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   WebServer.hpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/28 14:56:26 by nofanizz          #+#    #+#             */
+/*   Updated: 2026/05/28 14:56:36 by nofanizz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef WEBSERVER_H
 #define WEBSERVER_H
 
@@ -15,7 +27,6 @@ class WebServer
 		static std::vector <struct pollfd> _pollfds;
 		static std::map <int, AManager *> _managers;
 		static void updateStatus();
-		static size_t	getPollFdSize();
 		static AManager* getManager(int fd);
 		static bool _finalAutoIndex;
 		static bool _firstLoopRequest;

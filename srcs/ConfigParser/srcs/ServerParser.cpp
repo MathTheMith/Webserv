@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerParser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nofanizz <nofanizz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: nofanizz <nofanizz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 10:30:00 by mvachon           #+#    #+#             */
-/*   Updated: 2026/05/11 15:49:15 by nofanizz         ###   ########.fr       */
+/*   Updated: 2026/05/28 14:52:34 by nofanizz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void Config::parseServerBlock(size_t *i)
 {
     ServerConfig server;
     size_t brace_level = 0;
-    
+
     if (_fileContent[*i].size() != 2 || _fileContent[*i][1] != "{")
         throw Exception("Missing opening brace after server");
 
@@ -44,7 +44,7 @@ void Config::parseServerBlock(size_t *i)
                 }
                 continue;
             }
-            
+
             bool known = false;
             for (size_t k = 0; k < SERVER_KEYS_COUNT; k++)
             {
@@ -54,7 +54,7 @@ void Config::parseServerBlock(size_t *i)
                     parseServerDirective(server, str, _fileContent[*i], j);
                 }
             }
-            
+
             if (brace_level == 1)
             {
                 if (str == "location")
@@ -75,7 +75,7 @@ void Config::parseServerBlock(size_t *i)
     throw Exception("Bad closing brace");
 }
 
-void validateServerConfig(const ServerConfig& server)
+void validateServerConfig(const ServerConfig &server)
 {
     if (server.port == -1)
         throw Exception("Port is not set");
